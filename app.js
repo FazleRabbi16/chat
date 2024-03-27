@@ -1,9 +1,15 @@
+//External imports
 const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+//Internal imports
+const {notFoundHandler,errorHandler} = require('./middleware/common/errorHandler');
+const loginRouter = require('./router/loginRouter');
+const usersRouter = require('./router/usersRouter');
+const inboxRouter = require('./router/inboxRouter');
 //env file confit
 dotenv.config();
 // view engine set
@@ -25,7 +31,12 @@ app.use(express.urlencoded());
 //parse cookies
 app.use(cookieParser(process.env.COOKIE_SECRET));
 //route setup
-//route heading
+app.use('/',loginRouter);
+app.use('/users',usersRouter);
+app.use('/inbox',inboxRouter);
+//404 not found handler
+app.use(notFoundHandler);
+app.use(errorHandler);
 // run server
 app.listen(process.env.PORT,()=>{
   console.log(`Server is running on http://localhost:${process.env.PORT}`);
